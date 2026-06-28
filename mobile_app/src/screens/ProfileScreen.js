@@ -187,28 +187,11 @@ export const ProfileScreen = ({
             </View>
           )}
 
-          {isOwnProfile && !profileInfo.isVerified && (
+          {isOwnProfile && !profileInfo.isVerified && profileInfo.verificationStatus === 'applied' && (
             <View style={{ marginTop: 8 }}>
-              {profileInfo.verificationStatus === 'applied' ? (
                 <View style={[styles.gstinBadgeRow, { backgroundColor: 'rgba(234, 179, 8, 0.08)', borderColor: 'rgba(234, 179, 8, 0.25)' }]}>
                   <Text style={{ color: '#eab308', fontSize: 11.5, fontWeight: '700' }}>⏳ Verification Submitted (Pending Approval)</Text>
                 </View>
-              ) : (
-                <TouchableOpacity 
-                  style={[styles.igProfileBtn, { backgroundColor: 'rgba(14, 165, 233, 0.08)', borderColor: 'rgba(14, 165, 233, 0.3)', width: '100%', height: 32, paddingVertical: 0, justifyContent: 'center' }]}
-                  onPress={async () => {
-                    try {
-                      await apiService.updateUserProfile(currentUser.phone, { verificationStatus: 'applied' });
-                      Alert.alert('Verification Applied', 'Your verification request has been submitted to the admin panel for review.');
-                      if (onVerificationSubmitted) onVerificationSubmitted();
-                    } catch (err) {
-                      Alert.alert('Error', err.message);
-                    }
-                  }}
-                >
-                  <Text style={[styles.igProfileBtnText, { color: '#0ea5e9', fontSize: 11 }]}>Apply for Verification Badge</Text>
-                </TouchableOpacity>
-              )}
             </View>
           )}
         </View>

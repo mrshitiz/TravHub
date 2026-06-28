@@ -3,7 +3,7 @@ import { View, ScrollView, Text, TouchableOpacity, Alert, Platform, Switch } fro
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { styles } from '../styles/themeStyles';
 import { notificationService } from '../services/notificationService';
-
+import { apiService } from '../services/apiService';
 export const SettingsScreen = ({ currentUser, onGoBack, onLogout }) => {
   const [pushEnabled, setPushEnabled] = useState(false);
   const [isToggling, setIsToggling] = useState(false);
@@ -116,6 +116,34 @@ export const SettingsScreen = ({ currentUser, onGoBack, onLogout }) => {
       </View>
 
       <ScrollView contentContainerStyle={{ paddingBottom: 40 }}>
+        
+        <SectionHeader title="Account" />
+        
+        <View style={{ backgroundColor: '#0f172a', borderRadius: 12, marginHorizontal: 16, overflow: 'hidden' }}>
+          <SettingsRow 
+            icon="🛡️" 
+            title={currentUser.isVerified ? "Verified Account" : currentUser.verificationStatus === 'applied' ? "Verification Pending" : "Apply for Verification"} 
+            hideBorder={true}
+            onPress={async () => {
+              if (currentUser.isVerified) {
+                Alert.alert("Verified", "Your account is already verified.");
+                return;
+              }
+              if (currentUser.verificationStatus === 'applied') {
+                Alert.alert("Pending", "Your verification request is currently under review.");
+                return;
+              }
+              try {
+                await apiService.updateUserProfile(currentUser.phone, { verificationStatus: 'applied' });
+                // We update currentUser locally so the UI updates
+                currentUser.verificationStatus = 'applied'; 
+                Alert.alert('Verification Applied', 'Your verification request has been submitted for review.');
+              } catch (err) {
+                Alert.alert('Error', err.message);
+              }
+            }}
+          />
+        </View>
         
         <SectionHeader title="Preferences" />
         

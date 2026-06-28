@@ -16,6 +16,8 @@ namespace TravHubLauncher
         private Button btnRestart;
         private Button btnCopyNgrok;
         private RichTextBox txtLogs;
+        private TextBox txtCommit;
+        private Button btnDeploy;
         
         private List<Process> runningProcesses = new List<Process>();
         private string basePath;
@@ -65,7 +67,19 @@ namespace TravHubLauncher
             btnRestart.Click += new EventHandler(BtnRestart_Click);
             topPanel.Controls.Add(btnRestart);
 
+            txtCommit = new TextBox();
+            txtCommit.Location = new Point(340, 12);
+            txtCommit.Width = 200;
+            txtCommit.Text = "Minor update";
+            topPanel.Controls.Add(txtCommit);
 
+            btnDeploy = new Button();
+            btnDeploy.Text = "Push to Live 🚀";
+            btnDeploy.Location = new Point(550, 10);
+            btnDeploy.Width = 120;
+            btnDeploy.BackColor = Color.LightSkyBlue;
+            btnDeploy.Click += new EventHandler(BtnDeploy_Click);
+            topPanel.Controls.Add(btnDeploy);
 
             txtLogs = new RichTextBox();
             txtLogs.Dock = DockStyle.Fill;
@@ -124,10 +138,7 @@ namespace TravHubLauncher
             txtLogs.Clear();
             Log("Starting TravHub Services...", Color.Cyan);
 
-            // 1. MongoDB
-            string mongoPath = Path.Combine(basePath, "backend", "mongodb", "bin", "mongod.exe");
-            string mongoDataPath = Path.Combine(basePath, "backend", "mongodb_data");
-            StartProcess(mongoPath, String.Format("--dbpath \"{0}\"", mongoDataPath), "MongoDB", Color.LimeGreen, "");
+            // MongoDB has been moved to Atlas (Cloud)
 
             // 2. Node Backend
             string backendPath = Path.Combine(basePath, "backend");
@@ -137,9 +148,7 @@ namespace TravHubLauncher
             string mobilePath = Path.Combine(basePath, "mobile_app");
             StartProcess("cmd.exe", "/c npm run web", "Frontend", Color.Yellow, mobilePath);
 
-            // 4. Cloudflare Tunnel
-            string cfPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "cloudflared.exe");
-            StartProcess(cfPath, "tunnel --url http://localhost:3000 run travhub_api", "Cloudflare", Color.MediumPurple, "");
+            // Cloudflare Tunnel is no longer needed since backend is on Render
 
             Log("All services requested to start.", Color.Cyan);
         }
@@ -217,7 +226,43 @@ namespace TravHubLauncher
             Log("Services stopped.", Color.Orange);
         }
 
-
+        private void BtnDeploy_Click(object sender, EventArgs e)
+        {
+            btnDeploy.Enabled = false;
+            Log("Starting Deploy to Live...", Color.Magenta);
+            string commitMsg = txtCommit.Text.Replace("\"", "'");
+            string args = "/c git add . && git commit -m \"" + commitMsg + "\" && git push";
+            
+            try
+            {
+                Process p = new Process();
+                p.StartInfo.FileName = "cmd.exe";
+                p.StartInfo.Arguments = args;
+                p.StartInfo.UseShellExecute = false;
+                p.StartInfo.RedirectStandardOutput = true;
+                p.StartInfo.RedirectStandardError = true;
+                p.StartInfo.CreateNoWindow = true;
+                p.StartInfo.WorkingDirectory = basePath;
+                
+                p.OutputDataReceived += (s, ev) => { if (ev.Data != null) Log("[GIT] " + ev.Data, Color.Magenta); };
+                p.ErrorDataReceived += (s, ev) => { if (ev.Data != null) Log("[GIT] " + ev.Data, Color.Magenta); };
+                
+                p.EnableRaisingEvents = true;
+                p.Exited += (s, ev) => { 
+                    Log("Deploy command finished! Cloudflare/Render will now update.", Color.Magenta);
+                    if (this.InvokeRequired) this.BeginInvoke(new Action(() => btnDeploy.Enabled = true));
+                };
+                
+                p.Start();
+                p.BeginOutputReadLine();
+                p.BeginErrorReadLine();
+            }
+            catch (Exception ex)
+            {
+                Log("Git error: " + ex.Message, Color.Red);
+                btnDeploy.Enabled = true;
+            }
+        }
 
         private void LauncherForm_FormClosing(object sender, FormClosingEventArgs e)
         {
