@@ -14,7 +14,7 @@ export const notificationService = {
 
     try {
       const isWeb = Platform.OS === 'web';
-      const API_URL = isWeb ? '/api' : 'http://192.168.1.X:3000/api';
+      const API_URL = isWeb ? '/api' : 'https://api.travhub.in/api';
 
       // 1. Request Notification Permission safely
       let permission = Notification.permission;
@@ -82,7 +82,7 @@ export const notificationService = {
 
     try {
       const isWeb = Platform.OS === 'web';
-      const API_URL = isWeb ? '/api' : 'http://192.168.1.X:3000/api';
+      const API_URL = isWeb ? '/api' : 'https://api.travhub.in/api';
 
       const registration = await navigator.serviceWorker.ready;
       const currentToken = await getToken(messaging, {

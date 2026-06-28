@@ -3,13 +3,10 @@ import io from 'socket.io-client';
 import { Platform } from 'react-native';
 
 const isWeb = Platform.OS === 'web';
-let BASE_URL = 'http://192.168.1.X:3000';
+let BASE_URL = 'https://api.travhub.in';
 if (isWeb) {
-  if (window.location.port === '8081' || window.location.port === '8082') {
-    BASE_URL = window.location.protocol + '//' + window.location.hostname + ':3000';
-  } else {
-    BASE_URL = window.location.origin;
-  }
+  // Always use the remote API for the web version now
+  BASE_URL = 'https://api.travhub.in';
 }
 const API_URL = `${BASE_URL}/api`;
 export const socket = io(BASE_URL);
