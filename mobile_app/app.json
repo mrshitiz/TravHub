@@ -1,0 +1,48 @@
+{
+  "expo": {
+    "name": "TravHub",
+    "slug": "travhub",
+    "version": "1.0.0",
+    "orientation": "portrait",
+    "icon": "./assets/icon.png",
+    "userInterfaceStyle": "light",
+    "newArchEnabled": true,
+    "splash": {
+      "image": "./assets/splash-icon.png",
+      "resizeMode": "contain",
+      "backgroundColor": "#050b14"
+    },
+    "ios": {
+      "supportsTablet": true,
+      "bundleIdentifier": "com.travhub.mobileapp",
+      "infoPlist": {
+        "ITSAppUsesNonExemptEncryption": false
+      }
+    },
+    "android": {
+      "googleServicesFile": "./google-services.json",
+      "adaptiveIcon": {
+        "foregroundImage": "./assets/icon.png",
+        "backgroundColor": "#050b14"
+      },
+      "edgeToEdgeEnabled": true,
+      "package": "com.travhub.mobileapp"
+    },
+    "web": {
+      "favicon": "./assets/icon.png",
+      "name": "TravHub",
+      "shortName": "TravHub",
+      "themeColor": "#050b14",
+      "backgroundColor": "#050b14",
+      "display": "standalone"
+    },
+    "plugins": [
+      "expo-sqlite"
+    ],
+    "extra": {
+      "eas": {
+        "projectId": "ae21d46c-21bd-4d97-bf48-dd7463a26641"
+      }
+    }
+  }
+}

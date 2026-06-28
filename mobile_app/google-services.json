@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "1019132706939",
+    "project_id": "travhub-d38c3",
+    "storage_bucket": "travhub-d38c3.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1019132706939:android:04ec6ecc52c5ef1350a2de",
+        "android_client_info": {
+          "package_name": "com.travhub.mobileapp"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDNrKaotZAYQCSO_1VJAEGuRrRqWAtCGrM"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
